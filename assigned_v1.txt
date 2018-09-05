@@ -1,4 +1,3 @@
-# ctl
 Utah Indigency Calculator
 Title: Utah Indigency Calculator
 Author: Jessica Promes
