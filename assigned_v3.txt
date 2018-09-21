@@ -1,0 +1,74 @@
+Title: Utah Indigency Calculator
+Author: Jessica Promes
+Before:<script src="https://jpromes.github.io/ctl/functions.js"></script><link rel="stylesheet" type="text/css" href="https://suffolklitlab.org/howto/qna/style/style.css">
+<div id="icon" style="background-size: 110px 99px;background-image: url('https://suffolklitlab.org/howto/qna/images/maxheadroom.gif');"></div>
+<h2 style="text-align:center;">Utah Indigency Calculator</h2>
+<p><b>This is a <a href="http://www.codingthelaw.org/">class project</a>. You should not rely on it as a source of legal information. It is likely incomplete.</b></p>
+<p>Answer the following questions to see if someone qualifies for appointment of counsel or fee waiver.</p>
+
+Q(name):Welcome! To start off, what is your name?
+X:
+	Q(house):Great thanks! How many people are in your client's household?
+	X:number
+		Q(money):What is your client's household income per year after taxes?
+		X:number
+			Q(civcrim):Does your client want to know about appointment of counsel for a criminal case or fee waiver for a civil case?
+			A[javascript:if (fedpov(getvar('house'),getvar('money'),100)){goto('exp')} else {goto('inciv')}]: civil 
+			A[javascript:if (fedpov(getvar('house'),getvar('money'),150)){goto('tran')} else {goto('cred')}]: criminal
+
+Q(cred):Does your client have sufficient income, assets, credit, or other means to provide for payment of legal counsel and all other necessary expenses of representation without depriving them or their family of food, shelter, clothing, and other necessities?
+A:Yes
+	Q(2.1):GOTO:inel
+A:No
+	Q(2.2):GOTO:elig
+
+Q(tran):Has your client transferred or otherwise disposed of any assets since the commission of the offense with the intent of establishing eligibility for the appointment of counsel under the statute?<input type="hidden" name="name" value="Dear-Client"/> <input type="hidden" name="docx_uri" value="https://jpromes.github.io/ctl/Dear-Client-Crim.docx"/> 
+A:Yes
+	Q(3.1):GOTO:inel
+A:No
+	Q(3.2):GOTO:elig
+
+Q(elig):Your client is considered indigent under the Utah Statute and should be eligible for appointment of counsel. If you would like a summary of your results, click below.
+A:[javascript:submit2('http://colarusso.pythonanywhere.com/','GET','','','','json_doc','_blank')]eligible.
+
+Q(inel):Your client might not be eligible for appointment of counsel, but the court has discretion and takes a number of factors into account. Would you like to know what the court may consider?
+A:Yes
+	Q(5.1):GOTO:list
+A:No, thanks!
+
+Q(list):Get ready, it's a bit long!<br>
+<br>In making a determination of indigency, the court shall consider:<br>
+(i) the probable expense and burden of defending the case;<br>
+(ii) the ownership of, or any interest in, any tangible or intangible personal property or real property, or reasonable expectancy of any such interest;<br>
+(iii) the amounts of debts owned by the defendant or that might reasonably be incurred by the defendant because of illness or other needs within the defendant's family;<br>
+(iv) number, ages, and relationships of any dependents;<br>
+(v) the reasonableness of fees and expenses charged to the defendant by the defendant's attorney and the scope of representation undertaken where the defendant is represented by privately retained defense counsel; and<br>
+(vi) other factors considered relevant by the court.<br><br>
+If you would like a summary of your results, click below.
+A:[javascript:submit2('http://colarusso.pythonanywhere.com/','GET','','','','json_doc','_blank')]ineligible.
+
+Q(exp):Are your client’s expenses less than their net income? <input type="hidden" name="name" value="Dear-Client-Civ"/><input type="hidden" name="docx_uri" value="https://jpromes.github.io/ctl/Dear-Client-Civ.docx"/>
+A:Yes
+	Q(7.1):GOTO:inciv
+A:No
+	Q(liq):Does your client have any liquid assets or credit that can be used to pay the fee without harming their financial position?
+	A:Yes
+		Q(7.2.1):GOTO:inciv
+	A:No
+		Q(noha):Does your client have assets that can be liquidated or borrowed against without harming their financial position?
+		A:Yes
+			Q(7.2.2.1):GOTO:inciv
+		A:No
+			Q(ali):Does section 30-3-3 (temporary alimony) apply to your client?
+			A:Yes
+				Q(7.2.2.2.1):GOTO:inciv
+			A:No
+				Q(mayb):Your client might be eligible for the fee waiver, but the judge has discretion to find your client able to pay. If you would like a summary of your results, click below.
+				A:[javascript:submit2('http://colarusso.pythonanywhere.com/','GET','','','','json_doc','_blank')]eligible.
+
+Q(inciv):Your client will likely be considered reasonably able to pay for fees. If you would like a summary of your results, click below.
+A:[javascript:submit2('http://colarusso.pythonanywhere.com/','GET','','','','json_doc','_blank')]ineligible.
+
+
+
+
